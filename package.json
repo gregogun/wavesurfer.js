@@ -1,8 +1,7 @@
 {
-  "name": "wavesurfer.js",
+  "name": "arcadia-wavesurfer",
   "version": "7.7.3",
   "license": "BSD-3-Clause",
-  "author": "katspaugh",
   "description": "Audio waveform player",
   "homepage": "https://wavesurfer.xyz",
   "keywords": [
@@ -14,8 +13,7 @@
     "linguistics"
   ],
   "repository": {
-    "type": "git",
-    "url": "git@github.com:katspaugh/wavesurfer.js.git"
+    "type": "git"
   },
   "type": "module",
   "files": [

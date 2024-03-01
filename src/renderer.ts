@@ -151,6 +151,7 @@ class Renderer extends EventEmitter<RendererEvents> {
 
   private initHtml(): [HTMLElement, ShadowRoot] {
     const div = document.createElement('div')
+    div.setAttribute('id', 'waveform-container')
     const shadow = div.attachShadow({ mode: 'open' })
 
     shadow.innerHTML = `
@@ -322,7 +323,6 @@ class Renderer extends EventEmitter<RendererEvents> {
     vScale: number,
   ) {
     const topChannel = channelData[0]
-    const bottomChannel = channelData[1] || channelData[0]
     const length = topChannel.length
 
     const { width, height } = ctx.canvas
@@ -340,34 +340,28 @@ class Renderer extends EventEmitter<RendererEvents> {
 
     let prevX = 0
     let maxTop = 0
-    let maxBottom = 0
     for (let i = 0; i <= length; i++) {
       const x = Math.round(i * barIndexScale)
 
       if (x > prevX) {
         const topBarHeight = Math.round(maxTop * halfHeight * vScale)
-        const bottomBarHeight = Math.round(maxBottom * halfHeight * vScale)
-        const barHeight = topBarHeight + bottomBarHeight || 1
+        const barHeight = topBarHeight || 1
+        const flippedBarHeight = barHeight * 0.5 // Half the height for the flipped waveform
 
-        // Vertical alignment
+        // Original bar
         let y = halfHeight - topBarHeight
-        if (options.barAlign === 'top') {
-          y = 0
-        } else if (options.barAlign === 'bottom') {
-          y = height - barHeight
-        }
-
         ctx[rectFn](prevX * (barWidth + barGap), y, barWidth, barHeight, barRadius)
+
+        // Flipped bar
+        let flippedY = halfHeight + (halfHeight - y) - flippedBarHeight // Calculate Y position for flipped bar
+        ctx[rectFn](prevX * (barWidth + barGap), flippedY, barWidth, flippedBarHeight, barRadius)
 
         prevX = x
         maxTop = 0
-        maxBottom = 0
       }
 
       const magnitudeTop = Math.abs(topChannel[i] || 0)
-      const magnitudeBottom = Math.abs(bottomChannel[i] || 0)
       if (magnitudeTop > maxTop) maxTop = magnitudeTop
-      if (magnitudeBottom > maxBottom) maxBottom = magnitudeBottom
     }
 
     ctx.fill()
