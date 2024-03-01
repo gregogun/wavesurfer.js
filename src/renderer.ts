@@ -352,8 +352,8 @@ class Renderer extends EventEmitter<RendererEvents> {
         let y = halfHeight - topBarHeight
         ctx[rectFn](prevX * (barWidth + barGap), y, barWidth, barHeight, barRadius)
 
-        // Flipped bar
-        let flippedY = halfHeight + (halfHeight - y) - flippedBarHeight // Calculate Y position for flipped bar
+        // Flipped bar - Now aligning the top of the flipped bar with the top of the original bar
+        let flippedY = y + barHeight - flippedBarHeight // Adjusted Y position for flipped bar
         ctx[rectFn](prevX * (barWidth + barGap), flippedY, barWidth, flippedBarHeight, barRadius)
 
         prevX = x
